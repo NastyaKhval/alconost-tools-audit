@@ -498,7 +498,6 @@
     </div>
 
     <div class="submit-row">
-      <span class="submit-note">Your responses go directly to the HR spreadsheet</span>
       <button type="submit" class="btn-submit" id="submitBtn">Submit →</button>
     </div>
 
@@ -606,7 +605,7 @@
     tr.id = 'extra-' + n;
     tr.innerHTML =
       '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="font-family:\'JetBrains Mono\',monospace;font-size:.78rem;width:100%"></td>' +
-      '<td></td>' +
+      '<td><div class="toggle-wrap"><label class="toggle"><input type="checkbox" name="euse_' + n + '" checked><span class="toggle-slider"></span></label></div></td>' +
       '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Team…"></td>' +
       '<td><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
       '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
