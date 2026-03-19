@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools & Subscriptions Audit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #1c2128;
+      --border: #30363d;
+      --border-bright: #484f58;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --accent: #00e676;
+      --accent-dim: rgba(0, 230, 118, 0.12);
+      --red: #ff7043;
+      --radius: 6px;
+      --radius-medium: 8px;
+      --radius-large: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      padding: 48px 24px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 36px;
+    }
+
+    .header-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem;
+      color: var(--accent);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .header-desc {
+      color: var(--text-muted);
+      font-size: .875rem;
+      line-height: 1.6;
+      max-width: 560px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-large);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    /* Personal info section */
+    .personal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: .75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .field input, .field select {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .875rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color .15s;
+      width: 100%;
+    }
+
+    .field input:focus, .field select:focus {
+      border-color: var(--accent);
+    }
+
+    .field input::placeholder { color: var(--text-subtle); }
+
+    /* Tools table */
+    .tools-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .tools-table thead tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tools-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .58rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-subtle);
+      padding: 10px 16px;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .tools-table th:nth-child(2) { text-align: center; }
+    .tools-table th:nth-child(3),
+    .tools-table th:nth-child(4) { text-align: left; }
+
+    .tools-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+    }
+
+    .tools-table tbody tr:last-child { border-bottom: none; }
+    .tools-table tbody tr:hover { background: var(--surface-2); }
+
+    .tools-table td {
+      padding: 9px 16px;
+      vertical-align: middle;
+    }
+
+    .service-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .service-tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .55rem;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+      vertical-align: middle;
+      opacity: .7;
+    }
+
+    .tag-ai   { background: rgba(122,168,240,.15); color: #7aa8f0; }
+    .tag-dev  { background: rgba(0,230,118,.12);   color: var(--accent); }
+    .tag-biz  { background: rgba(255,165,2,.12);   color: #ffa502; }
+    .tag-design { background: rgba(244,114,182,.12); color: #f472b6; }
+
+    /* Checkbox toggle */
+    .toggle-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: 3px;
+      top: 3px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: transform .2s, background .2s;
+    }
+
+    .toggle input:checked + .toggle-slider { background: var(--accent-dim); border: 1px solid var(--accent); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--accent); }
+
+    /* Tooltip */
+    .tip {
+      position: fixed;
+      background: var(--surface-2);
+      border: 1px solid var(--border-bright);
+      border-radius: var(--radius);
+      padding: 7px 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem;
+      color: var(--text-muted);
+      max-width: 240px;
+      line-height: 1.5;
+      pointer-events: none;
+      z-index: 999;
+      display: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,.4);
+    }
+
+    /* Row inactive state */
+    .tools-table tbody tr.inactive td:nth-child(n+3) {
+      opacity: .25;
+      pointer-events: none;
+    }
+    .tools-table tbody tr.inactive .service-name { color: var(--text-subtle); }
+    .tools-table tbody tr.inactive .service-tag  { opacity: .3; }
+
+    /* Table inputs */
+    .tools-table input[type="text"] {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .8rem;
+      padding: 5px 8px;
+      outline: none;
+      transition: border-color .15s, background .15s;
+      width: 100%;
+    }
+
+    .tools-table input[type="text"]:focus {
+      border-color: var(--border-bright);
+      background: var(--surface-2);
+    }
+
+    .tools-table input[type="text"]::placeholder { color: var(--text-subtle); font-size: .75rem; }
+
+    /* Submit */
+    .submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0 0;
+      gap: 16px;
+    }
+
+    .submit-note {
+      font-size: .75rem;
+      color: var(--text-subtle);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-add {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-add:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-remove {
+      background: none;
+      border: none;
+      color: var(--text-subtle);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+      transition: color .15s;
+    }
+    .btn-remove:hover { color: var(--red); }
+
+    .btn-submit {
+      background: var(--accent);
+      color: #0d1117;
+      border: none;
+      border-radius: var(--radius-medium);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      font-weight: 700;
+      padding: 10px 24px;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: opacity .15s;
+    }
+
+    .btn-submit:hover { opacity: .85; }
+    .btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* Success / Error states */
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-medium);
+      padding: 14px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem;
+      color: var(--text);
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      z-index: 100;
+    }
+
+    .toast.success { border-color: var(--accent); color: var(--accent); }
+    .toast.error   { border-color: var(--red);    color: var(--red); }
+    .toast.show    { display: block; animation: fadeIn .2s ease; }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    @media (max-width: 600px) {
+      .personal-grid { grid-template-columns: 1fr; }
+      .tools-table th:nth-child(4),
+      .tools-table td:nth-child(4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">Alconost · Internal</div>
+    <h1>Tools & Subscriptions Audit</h1>
+    <p class="header-desc">Toggle on the tools you use, then fill in your plan and access email. Add any missing tools at the bottom.</p>
+  </div>
+
+  <form id="auditForm">
+
+    <!-- Personal info -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Your Info</div>
+      </div>
+      <div class="personal-grid">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" name="name" placeholder="e.g. Anna Kozlovich" required>
+        </div>
+        <div class="field">
+          <label>Work Email</label>
+          <input type="email" name="workEmail" placeholder="you@alconost.com" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools table -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Services</div>
+      </div>
+      <table class="tools-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>I use this</th>
+            <th style="width:180px">Subscription Plan</th>
+            <th style="width:220px">Access Email</th>
+          </tr>
+        </thead>
+        <tbody id="toolsBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Additional tools -->
+    <div class="card" style="margin-top:24px">
+      <div class="card-header" style="justify-content:space-between">
+        <div class="card-title">Additional Tools</div>
+        <button type="button" class="btn-add" id="addToolBtn">+ Add tool</button>
+      </div>
+      <table class="tools-table">
+        <thead>
+          <tr>
+            <th>Service Name</th>
+            <th style="width:180px">Subscription Plan</th>
+            <th style="width:220px">Access Email</th>
+            <th style="width:36px"></th>
+          </tr>
+        </thead>
+        <tbody id="extraBody">
+          <tr id="extraPlaceholder">
+            <td colspan="4" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:'JetBrains Mono',monospace;font-size:.7rem">
+              No additional tools added yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="submit-row">
+      <span class="submit-note">Your responses go directly to the HR spreadsheet</span>
+      <button type="submit" class="btn-submit" id="submitBtn">Submit →</button>
+    </div>
+
+  </form>
+
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="tip" id="tip"></div>
+
+<script>
+  // ── Services list ──────────────────────────────────────────
+  var SERVICES = [
+    { name: 'OpenAI Chat',          tag: 'ai' },
+    { name: 'OpenAI API',           tag: 'ai' },
+    { name: 'OpenAI Codex',         tag: 'ai' },
+    { name: 'Anthropic Chat',       tag: 'ai' },
+    { name: 'Anthropic Claude Code',tag: 'ai' },
+    { name: 'Anthropic API',        tag: 'ai' },
+    { name: 'Cursor',               tag: 'dev' },
+    { name: 'Lovable',              tag: 'dev' },
+    { name: 'ElevenLabs',           tag: 'ai' },
+    { name: 'Midjourney',           tag: 'ai' },
+    { name: 'n8n',                  tag: 'dev' },
+    { name: 'Mistral',              tag: 'ai' },
+    { name: 'xAI API',              tag: 'ai' },
+    { name: 'Perplexity',           tag: 'ai' },
+    { name: 'Hugging Face',         tag: 'ai' },
+    { name: 'Figma',                tag: 'design' },
+    { name: 'Kling',                tag: 'ai' },
+    { name: 'Notion',               tag: 'biz' },
+    { name: 'Grammarly',            tag: 'biz' },
+    { name: 'CapCut',               tag: 'design' },
+    { name: 'Fiverr',               tag: 'biz' },
+    { name: 'Dripify',              tag: 'biz' },
+    { name: 'Calendly',             tag: 'biz' },
+    { name: 'Lusha',                tag: 'biz' },
+    { name: 'Decklinks',            tag: 'biz' },
+    { name: 'Apify',                tag: 'dev' },
+    { name: 'Clay',                 tag: 'biz' },
+    { name: 'Crunchbase',           tag: 'biz' },
+    { name: 'PhantomBuster',        tag: 'biz' },
+  ];
+
+  var TAG_LABELS = { ai: 'AI', dev: 'Dev', biz: 'Biz', design: 'Design' };
+
+  var tbody = document.getElementById('toolsBody');
+  SERVICES.forEach(function(s, i) {
+    var tr = document.createElement('tr');
+    tr.className = 'inactive';
+    tr.innerHTML =
+      '<td><span class="service-name">' + s.name + '</span>' +
+        '<span class="service-tag tag-' + s.tag + '">' + TAG_LABELS[s.tag] + '</span></td>' +
+      '<td><div class="toggle-wrap"><label class="toggle">' +
+        '<input type="checkbox" name="use_' + i + '">' +
+        '<span class="toggle-slider"></span>' +
+      '</label></div></td>' +
+      '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Team…" tabindex="-1" data-tip="plan"></td>' +
+      '<td><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email"></td>';
+    tbody.appendChild(tr);
+
+    tr.querySelector('input[type="checkbox"]').addEventListener('change', function() {
+      tr.classList.toggle('inactive', !this.checked);
+      tr.querySelectorAll('input[type="text"]').forEach(function(el) {
+        el.tabIndex = this.checked ? 0 : -1;
+      }.bind(this));
+    });
+  });
+
+  // ── Additional tools ───────────────────────────────────────
+  var extraCount = 0;
+  document.getElementById('addToolBtn').addEventListener('click', function() {
+    var placeholder = document.getElementById('extraPlaceholder');
+    if (placeholder) placeholder.remove();
+    var tbody = document.getElementById('extraBody');
+    var n = extraCount++;
+    var tr = document.createElement('tr');
+    tr.id = 'extra-' + n;
+    tr.innerHTML =
+      '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="width:100%"></td>' +
+      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Team…"></td>' +
+      '<td><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
+      '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
+    tbody.appendChild(tr);
+    tr.querySelector('input').focus();
+  });
+
+  function removeExtra(n) {
+    var tr = document.getElementById('extra-' + n);
+    if (tr) tr.remove();
+    if (!document.getElementById('extraBody').querySelector('tr')) {
+      var ph = document.createElement('tr');
+      ph.id = 'extraPlaceholder';
+      ph.innerHTML = '<td colspan="4" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:\'JetBrains Mono\',monospace;font-size:.7rem">No additional tools added yet</td>';
+      document.getElementById('extraBody').appendChild(ph);
+    }
+  }
+
+  // ── APPS SCRIPT URL — paste your deployed web app URL here ──
+  var SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+  // ── Submit ──────────────────────────────────────────────────
+  document.getElementById('auditForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var btn = document.getElementById('submitBtn');
+    var form = e.target;
+
+    var name      = form.name.value.trim();
+    var workEmail = form.workEmail.value.trim();
+    if (!name || !workEmail) { showToast('Please fill in your name and work email', 'error'); return; }
+
+    var rows = SERVICES.map(function(s, i) {
+      var uses = form['use_' + i] && form['use_' + i].checked;
+      if (!uses) return null;
+      return {
+        service: s.name,
+        uses:    'Yes',
+        plan:    (form['plan_'  + i].value || '').trim(),
+        email:   (form['email_' + i].value || '').trim(),
+      };
+    }).filter(Boolean);
+
+    // extra tools
+    for (var n = 0; n < extraCount; n++) {
+      var nameEl = form['ename_' + n];
+      if (!nameEl) continue;
+      var ename = nameEl.value.trim();
+      if (!ename) continue;
+      rows.push({
+        service: ename,
+        uses:    'Yes',
+        plan:    (form['eplan_'  + n] ? form['eplan_'  + n].value : '').trim(),
+        email:   (form['eemail_' + n] ? form['eemail_' + n].value : '').trim(),
+      });
+    }
+
+    if (!rows.length) { showToast('Toggle on at least one service', 'error'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    var payload = { name: name, workEmail: workEmail, rows: rows };
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.status === 'ok') {
+        showToast('✓ Submitted — thank you!', 'success');
+        btn.textContent = '✓ Sent';
+      } else {
+        throw new Error(res.message || 'Error');
+      }
+    })
+    .catch(function(err) {
+      showToast('Error: ' + err.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Submit →';
+    });
+  });
+
+  // ── Tooltips ───────────────────────────────────────────────
+  var TIPS = {
+    plan:  'Your subscription type for this tool — e.g. Free, Pro, or Team. If you\'re part of a shared team plan, mention it here.',
+    email: 'The email address this specific account is registered under. May differ from your work email.',
+  };
+  var tip = document.getElementById('tip');
+  var tipTimer;
+
+  document.addEventListener('mouseover', function(e) {
+    var el = e.target.closest('input[data-tip]');
+    if (!el) return;
+    clearTimeout(tipTimer);
+    tipTimer = setTimeout(function() {
+      tip.textContent = TIPS[el.dataset.tip] || '';
+      tip.style.display = 'block';
+      positionTip(e);
+    }, 300);
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (tip.style.display === 'block') positionTip(e);
+  });
+
+  document.addEventListener('mouseout', function(e) {
+    if (e.target.closest('input[data-tip]')) {
+      clearTimeout(tipTimer);
+      tip.style.display = 'none';
+    }
+  });
+
+  function positionTip(e) {
+    var x = e.clientX + 14, y = e.clientY + 14;
+    if (x + 250 > window.innerWidth) x = e.clientX - 254;
+    tip.style.left = x + 'px';
+    tip.style.top  = y + 'px';
+  }
+
+  function showToast(msg, type) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (type || '');
+    setTimeout(function() { t.classList.remove('show'); }, 4000);
+  }
+</script>
+</body>
+</html>
