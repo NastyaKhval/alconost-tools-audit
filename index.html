@@ -384,11 +384,7 @@
       <div class="card-header">
         <div class="card-title">Your Info</div>
       </div>
-      <div class="personal-grid">
-        <div class="field">
-          <label>Full Name</label>
-          <input type="text" name="name" placeholder="e.g. Anna Kozlovich" required>
-        </div>
+      <div style="padding:20px">
         <div class="field">
           <label>Work Email</label>
           <input type="email" name="workEmail" placeholder="you@alconost.com" required>
@@ -540,7 +536,7 @@
   }
 
   // ── APPS SCRIPT URL — paste your deployed web app URL here ──
-  var SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwu7otEZiEPpabQd38NLPFgO0swMwUcJvQuOoiFJ72ubPW2_HKjPNSTr2I9PDuJozw/exec';
 
   // ── Submit ──────────────────────────────────────────────────
   document.getElementById('auditForm').addEventListener('submit', function(e) {
@@ -548,9 +544,8 @@
     var btn = document.getElementById('submitBtn');
     var form = e.target;
 
-    var name      = form.name.value.trim();
     var workEmail = form.workEmail.value.trim();
-    if (!name || !workEmail) { showToast('Please fill in your name and work email', 'error'); return; }
+    if (!workEmail) { showToast('Please enter your work email', 'error'); return; }
 
     var rows = SERVICES.map(function(s, i) {
       var uses = form['use_' + i] && form['use_' + i].checked;
@@ -582,7 +577,7 @@
     btn.disabled = true;
     btn.textContent = 'Sending…';
 
-    var payload = { name: name, workEmail: workEmail, rows: rows };
+    var payload = { workEmail: workEmail, rows: rows };
 
     fetch(SCRIPT_URL, {
       method: 'POST',
