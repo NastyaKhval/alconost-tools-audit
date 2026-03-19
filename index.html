@@ -461,12 +461,15 @@
     <!-- Tools table -->
     <div class="card">
       <table class="tools-table">
+        <colgroup>
+          <col><col style="width:80px"><col style="width:180px"><col style="width:220px">
+        </colgroup>
         <thead>
           <tr>
             <th>Service</th>
-            <th>I use this</th>
-            <th style="width:180px">Subscription Plan</th>
-            <th style="width:220px">Access Email</th>
+            <th style="text-align:center">I use this</th>
+            <th>Subscription Plan</th>
+            <th>Access Email</th>
           </tr>
         </thead>
         <tbody id="toolsBody"></tbody>
@@ -480,6 +483,9 @@
         <button type="button" class="btn-add" id="addToolBtn">+ Add tool</button>
       </div>
       <table class="tools-table">
+        <colgroup>
+          <col><col style="width:80px"><col style="width:180px"><col style="width:220px"><col style="width:36px">
+        </colgroup>
         <tbody id="extraBody">
           <tr id="extraPlaceholder">
             <td colspan="4" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:'JetBrains Mono',monospace;font-size:.7rem">
@@ -597,10 +603,11 @@
     var tr = document.createElement('tr');
     tr.id = 'extra-' + n;
     tr.innerHTML =
-      '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="width:100%"></td>' +
-      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Team…"></td>' +
-      '<td><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
-      '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
+      '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="width:100%;font-family:\'JetBrains Mono\',monospace;font-size:.78rem"></td>' +
+      '<td style="width:80px;text-align:center"></td>' +
+      '<td style="width:180px"><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Team…"></td>' +
+      '<td style="width:220px"><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
+      '<td style="width:36px"><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
     tbody.appendChild(tr);
     tr.querySelector('input').focus();
   });
