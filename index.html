@@ -370,6 +370,19 @@
 
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
+    /* Hearts animation */
+    .heart-particle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.4rem;
+      z-index: 9999;
+      animation: heartFly 1.2s ease-out forwards;
+    }
+    @keyframes heartFly {
+      0%   { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.4) rotate(var(--dr)); }
+    }
+
     /* Steps */
     #step2 { display: none; }
     #step2.visible { display: block; animation: fadeIn .3s ease; }
@@ -481,7 +494,7 @@
     <!-- Additional tools -->
     <div class="card" style="margin-top:24px">
       <div class="card-header" style="justify-content:space-between">
-        <div class="card-title">Add a tool if it's not in the list above</div>
+        <div class="card-title">Add a tool if it's not in the list above, please</div>
         <button type="button" class="btn-add" id="addToolBtn">+ Add tool</button>
       </div>
       <table class="tools-table">
@@ -512,7 +525,7 @@
     <p style="color:var(--text-muted);font-size:.875rem;line-height:1.6;margin-bottom:32px">Your responses have been saved. We really appreciate you taking the time.</p>
     <div style="display:flex;flex-direction:column;gap:10px">
       <button onclick="location.reload()" class="btn-submit" style="background:var(--surface-2);color:var(--text);border:1px solid var(--border)">← Fill in again</button>
-      <button onclick="window.close()" class="btn-submit">I'm done, back to work →</button>
+      <button onclick="launchHearts(this); setTimeout(function(){ window.close(); }, 1400);" class="btn-submit">I'm done, back to work →</button>
     </div>
   </div>
 
@@ -725,6 +738,32 @@
     if (x + 250 > window.innerWidth) x = e.clientX - 254;
     tip.style.left = x + 'px';
     tip.style.top  = y + 'px';
+  }
+
+  function launchHearts(btn) {
+    var rect = btn.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var emojis = ['❤️','🧡','💛','💚','💙','💜','🩷','🤍'];
+    for (var i = 0; i < 18; i++) {
+      (function(i) {
+        setTimeout(function() {
+          var el = document.createElement('span');
+          el.className = 'heart-particle';
+          el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          var angle = (Math.random() * 360) * Math.PI / 180;
+          var dist = 80 + Math.random() * 160;
+          el.style.left = (cx - 12) + 'px';
+          el.style.top  = (cy - 12) + 'px';
+          el.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+          el.style.setProperty('--dy', Math.sin(angle) * dist - 60 + 'px');
+          el.style.setProperty('--dr', (Math.random() * 60 - 30) + 'deg');
+          el.style.animationDuration = (0.8 + Math.random() * 0.6) + 's';
+          document.body.appendChild(el);
+          el.addEventListener('animationend', function() { el.remove(); });
+        }, i * 40);
+      })(i);
+    }
   }
 
   function showToast(msg, type) {
