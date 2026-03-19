@@ -162,7 +162,7 @@
       font-weight: 700;
     }
 
-    .tools-table th:nth-child(2) { text-align: center; }
+    .tools-table th:nth-child(2) { text-align: center; white-space: nowrap; }
     .tools-table th:nth-child(3),
     .tools-table th:nth-child(4) { text-align: left; }
 
@@ -276,7 +276,7 @@
       color: var(--text);
       font-family: 'Inter', sans-serif;
       font-size: .8rem;
-      padding: 5px 8px;
+      padding: 5px 0;
       outline: none;
       transition: border-color .15s, background .15s;
       width: 100%;
@@ -462,7 +462,7 @@
     <div class="card">
       <table class="tools-table">
         <colgroup>
-          <col><col style="width:80px"><col style="width:180px"><col style="width:220px">
+          <col><col style="width:80px"><col style="width:180px"><col style="width:220px"><col style="width:36px">
         </colgroup>
         <thead>
           <tr>
@@ -470,6 +470,7 @@
             <th style="text-align:center">I use this</th>
             <th>Subscription Plan</th>
             <th>Access Email</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="toolsBody"></tbody>
@@ -488,7 +489,7 @@
         </colgroup>
         <tbody id="extraBody">
           <tr id="extraPlaceholder">
-            <td colspan="4" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:'JetBrains Mono',monospace;font-size:.7rem">
+            <td colspan="5" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:'JetBrains Mono',monospace;font-size:.7rem">
               No additional tools added yet
             </td>
           </tr>
@@ -568,7 +569,8 @@
         '<span class="toggle-slider"></span>' +
       '</label></div></td>' +
       '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Team…" tabindex="-1" data-tip="plan"></td>' +
-      '<td><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email"></td>';
+      '<td><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email"></td>' +
+      '<td></td>';
     tbody.appendChild(tr);
 
     tr.querySelector('input[type="checkbox"]').addEventListener('change', function() {
@@ -603,11 +605,11 @@
     var tr = document.createElement('tr');
     tr.id = 'extra-' + n;
     tr.innerHTML =
-      '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="width:100%;font-family:\'JetBrains Mono\',monospace;font-size:.78rem"></td>' +
-      '<td style="width:80px;text-align:center"></td>' +
-      '<td style="width:180px"><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Team…"></td>' +
-      '<td style="width:220px"><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
-      '<td style="width:36px"><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
+      '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="font-family:\'JetBrains Mono\',monospace;font-size:.78rem;width:100%"></td>' +
+      '<td></td>' +
+      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Team…"></td>' +
+      '<td><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
+      '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
     tbody.appendChild(tr);
     tr.querySelector('input').focus();
   });
