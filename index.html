@@ -369,6 +369,59 @@
 
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
+    /* Steps */
+    #step2 { display: none; }
+    #step2.visible { display: block; animation: fadeIn .3s ease; }
+
+    .step1-card {
+      max-width: 480px;
+      margin: 60px auto 0;
+    }
+
+    .step1-card .card { padding: 32px; }
+
+    .step1-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .step1-hint {
+      font-size: .78rem;
+      color: var(--text-subtle);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .btn-next {
+      width: 100%;
+      margin-top: 14px;
+      background: var(--accent);
+      color: #0d1117;
+      border: none;
+      border-radius: var(--radius-medium);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82rem;
+      font-weight: 700;
+      padding: 11px;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-next:hover { opacity: .85; }
+
+    .step2-email-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(0,230,118,.2);
+      border-radius: var(--radius);
+      padding: 3px 10px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
     @media (max-width: 600px) {
       .personal-grid { grid-template-columns: 1fr; }
       .tools-table th:nth-child(4),
@@ -382,20 +435,25 @@
   <div class="header">
     <div class="header-eyebrow">Alconost · Internal</div>
     <h1>Tools & Subscriptions Audit</h1>
-    <p class="header-desc">Toggle on the tools you use, then fill in your plan and access email. Add any missing tools at the bottom.</p>
   </div>
 
   <form id="auditForm">
 
-    <!-- Personal info -->
-    <div class="card">
-      <div style="padding:20px">
+    <!-- Step 1: email -->
+    <div id="step1" class="step1-card">
+      <div class="card">
+        <p class="step1-hint">We're collecting info on which tools and subscriptions our team uses. It takes 2–3 minutes. Toggle on the tools you use, add your plan and the email the account is registered under.</p>
         <div class="field">
-          <label>Please enter your work email</label>
+          <label>Your work email</label>
           <input type="email" name="workEmail" placeholder="you@alconost.com" required>
         </div>
+        <button type="button" class="btn-next" id="nextBtn">Continue →</button>
       </div>
     </div>
+
+    <!-- Step 2: tools -->
+    <div id="step2">
+      <div id="emailBadge" class="step2-email-badge"></div>
 
     <!-- Tools table -->
     <div class="card">
@@ -445,6 +503,7 @@
       <button type="submit" class="btn-submit" id="submitBtn">Submit →</button>
     </div>
 
+    </div><!-- /step2 -->
   </form>
 
 </div>
@@ -509,6 +568,20 @@
         el.tabIndex = this.checked ? 0 : -1;
       }.bind(this));
     });
+  });
+
+  // ── Step navigation ────────────────────────────────────────
+  document.getElementById('nextBtn').addEventListener('click', function() {
+    var email = document.querySelector('[name="workEmail"]').value.trim();
+    if (!email || !email.includes('@')) {
+      showToast('Please enter a valid work email', 'error');
+      return;
+    }
+    document.getElementById('step1').style.display = 'none';
+    var s2 = document.getElementById('step2');
+    s2.classList.add('visible');
+    document.getElementById('emailBadge').textContent = email;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   // ── Additional tools ───────────────────────────────────────
