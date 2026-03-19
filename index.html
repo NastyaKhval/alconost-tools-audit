@@ -453,7 +453,10 @@
 
     <!-- Step 2: tools -->
     <div id="step2">
-      <div id="emailBadge" class="step2-email-badge"></div>
+      <div style="margin-bottom:16px">
+        <div style="font-size:.72rem;color:var(--text-subtle);font-family:'JetBrains Mono',monospace;margin-bottom:6px">Filling in as</div>
+        <div id="emailBadge" class="step2-email-badge"></div>
+      </div>
 
     <!-- Tools table -->
     <div class="card">
@@ -473,7 +476,10 @@
     <!-- Additional tools -->
     <div class="card" style="margin-top:24px">
       <div class="card-header" style="justify-content:space-between">
-        <div class="card-title">Additional Tools</div>
+        <div>
+          <div class="card-title">Didn't find your tool?</div>
+          <div style="font-size:.72rem;color:var(--text-subtle);font-family:'JetBrains Mono',monospace;margin-top:3px">Please add it below if it's not in the list above</div>
+        </div>
         <button type="button" class="btn-add" id="addToolBtn">+ Add tool</button>
       </div>
       <table class="tools-table">
