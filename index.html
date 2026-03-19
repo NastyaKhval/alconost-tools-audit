@@ -294,7 +294,7 @@
     .submit-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       padding: 20px 0 0;
       gap: 16px;
     }
@@ -525,7 +525,7 @@
     <p style="color:var(--text-muted);font-size:.875rem;line-height:1.6;margin-bottom:32px">Your responses have been saved. We really appreciate you taking the time.</p>
     <div style="display:flex;flex-direction:column;gap:10px">
       <button onclick="location.reload()" class="btn-submit" style="background:var(--surface-2);color:var(--text);border:1px solid var(--border)">← Fill in again</button>
-      <button onclick="launchHearts(this); setTimeout(function(){ window.close(); }, 1400);" class="btn-submit">I'm done, back to work →</button>
+      <button id="doneBtn" class="btn-submit">I'm done, back to work →</button>
     </div>
   </div>
 
@@ -739,6 +739,13 @@
     tip.style.left = x + 'px';
     tip.style.top  = y + 'px';
   }
+
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'doneBtn') {
+      launchHearts(e.target);
+      setTimeout(function() { window.close(); }, 1400);
+    }
+  });
 
   function launchHearts(btn) {
     var rect = btn.getBoundingClientRect();
