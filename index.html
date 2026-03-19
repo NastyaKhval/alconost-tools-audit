@@ -503,6 +503,17 @@
     </div><!-- /step2 -->
   </form>
 
+  <!-- Step 3: success -->
+  <div id="step3" style="display:none;max-width:480px;margin:80px auto 0;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:16px">🎉</div>
+    <h2 style="font-size:1.3rem;font-weight:600;margin-bottom:10px">Thank you!</h2>
+    <p style="color:var(--text-muted);font-size:.875rem;line-height:1.6;margin-bottom:32px">Your responses have been saved. We really appreciate you taking the time.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button onclick="location.reload()" class="btn-submit" style="background:var(--surface-2);color:var(--text);border:1px solid var(--border)">← Fill in again</button>
+      <button onclick="window.close()" class="btn-submit">I'm done, back to work →</button>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -661,8 +672,9 @@
     .then(function(r) { return r.json(); })
     .then(function(res) {
       if (res.status === 'ok') {
-        showToast('✓ Submitted — thank you!', 'success');
-        btn.textContent = '✓ Sent';
+        document.getElementById('auditForm').style.display = 'none';
+        document.getElementById('step3').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         throw new Error(res.message || 'Error');
       }
