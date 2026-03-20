@@ -727,6 +727,9 @@
 
     if (!rows.length) { showToast('Toggle on at least one service', 'error'); return; }
 
+    var missingEmail = rows.find(function(r) { return !r.email; });
+    if (missingEmail) { showToast('Please fill in Access Email for: ' + missingEmail.service, 'error'); return; }
+
     btn.disabled = true;
     btn.textContent = 'Sending…';
 
