@@ -314,7 +314,25 @@
     .tools-table input[type="text"]::placeholder { color: var(--text-subtle); font-size: .75rem; }
 
     .plan-wrap { position: relative; display: flex; align-items: center; width: 100%; }
-    .plan-wrap input { flex: 1; padding-right: 18px; }
+    .plan-wrap input { flex: 1; padding-right: 34px; }
+    .plan-clear {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-subtle);
+      font-size: .8rem;
+      cursor: pointer;
+      padding: 2px 4px;
+      line-height: 1;
+      display: none;
+      opacity: 0.6;
+      transition: opacity .15s, color .15s;
+    }
+    .plan-clear:hover { opacity: 1; color: var(--red); }
+    .plan-input:not(:placeholder-shown) + .plan-clear { display: block; }
     .plan-arrow {
       position: absolute;
       right: 0;
@@ -673,7 +691,7 @@
         '<input type="checkbox" name="use_' + i + '">' +
         '<span class="toggle-slider"></span>' +
       '</label></div></td>' +
-      '<td><div class="plan-wrap"><input type="text" name="plan_' + i + '" class="plan-input" autocomplete="off" tabindex="-1" data-tip="plan" placeholder="please input or select"><button type="button" class="plan-arrow" tabindex="-1">▾</button></div></td>' +
+      '<td><div class="plan-wrap"><input type="text" name="plan_' + i + '" class="plan-input" autocomplete="off" tabindex="-1" data-tip="plan" placeholder="please input or select"><button type="button" class="plan-clear" tabindex="-1" onclick="this.previousElementSibling.value=\'\';this.previousElementSibling.dispatchEvent(new Event(\'input\'))">✕</button><button type="button" class="plan-arrow" tabindex="-1">▾</button></div></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="team_' + i + '" tabindex="-1"></div></td>' +
       '<td class="td-email"><input type="text" name="email_' + i + '" placeholder="please enter email here" tabindex="-1" data-tip="email" autocomplete="new-password"><span class="edit-hint">✎</span></td>' +
       '<td></td>';
@@ -721,7 +739,7 @@
     tr.innerHTML =
       '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="font-family:\'JetBrains Mono\',monospace;font-size:.78rem;width:100%"></td>' +
       '<td><div class="toggle-wrap"><label class="toggle"><input type="checkbox" name="euse_' + n + '" checked><span class="toggle-slider"></span></label></div></td>' +
-      '<td><div class="plan-wrap"><input type="text" name="eplan_' + n + '" class="plan-input" autocomplete="off" placeholder="please input or select"><button type="button" class="plan-arrow" tabindex="-1">▾</button></div></td>' +
+      '<td><div class="plan-wrap"><input type="text" name="eplan_' + n + '" class="plan-input" autocomplete="off" placeholder="please input or select"><button type="button" class="plan-clear" tabindex="-1" onclick="this.previousElementSibling.value=\'\';this.previousElementSibling.dispatchEvent(new Event(\'input\'))">✕</button><button type="button" class="plan-arrow" tabindex="-1">▾</button></div></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="eteam_' + n + '"></div></td>' +
       '<td class="td-email"><input type="text" name="eemail_' + n + '" placeholder="please enter email here" autocomplete="new-password"><span class="edit-hint">✎</span></td>' +
       '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
