@@ -313,13 +313,13 @@
 
     .tools-table input[type="text"]::placeholder { color: var(--text-subtle); font-size: .75rem; }
     @keyframes emailPlaceholderPulse {
-      0%, 100% { opacity: 0.5; }
-      50%       { opacity: 1; }
+      0%, 45%, 100% { opacity: 0.35; }
+      55%           { opacity: 0.75; }
     }
     .td-email input[type="text"]::placeholder {
       color: var(--accent);
       font-size: .75rem;
-      animation: emailPlaceholderPulse 2s ease-in-out infinite;
+      animation: emailPlaceholderPulse 2.5s ease-in-out infinite;
     }
     .tools-table tbody tr.inactive .td-email input[type="text"]::placeholder {
       color: var(--text-subtle);
