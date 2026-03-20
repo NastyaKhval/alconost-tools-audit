@@ -331,7 +331,15 @@
       transition: opacity .15s, color .15s;
     }
     .plan-arrow:hover { opacity: 1; color: var(--accent); }
-    .tools-table tbody tr.inactive .plan-arrow { pointer-events: none; }
+    .tools-table tbody tr:not(.inactive) .plan-arrow {
+      animation: arrowPulse 2s ease-in-out infinite;
+      color: var(--accent);
+    }
+    @keyframes arrowPulse {
+      0%, 100% { opacity: 0.5; }
+      50%       { opacity: 1; }
+    }
+    .tools-table tbody tr.inactive .plan-arrow { pointer-events: none; animation: none; }
 
     .td-email { position: relative; }
     .edit-hint {
