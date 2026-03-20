@@ -313,6 +313,19 @@
 
     .tools-table input[type="text"]::placeholder { color: var(--text-subtle); font-size: .75rem; }
 
+    .td-email { position: relative; }
+    .edit-hint {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .65rem;
+      color: var(--text-subtle);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .tools-table tbody tr.inactive .edit-hint { opacity: 0.1; }
+
     /* Submit */
     .submit-row {
       display: flex;
@@ -629,7 +642,7 @@
       '</label></div></td>' +
       '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Advanced…" class="plan-input" autocomplete="off" tabindex="-1" data-tip="plan"></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="team_' + i + '" tabindex="-1"></div></td>' +
-      '<td><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email" autocomplete="new-password"></td>' +
+      '<td class="td-email"><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email" autocomplete="new-password"><span class="edit-hint">✎</span></td>' +
       '<td></td>';
     tbody.appendChild(tr);
 
@@ -669,7 +682,7 @@
       '<td><div class="toggle-wrap"><label class="toggle"><input type="checkbox" name="euse_' + n + '" checked><span class="toggle-slider"></span></label></div></td>' +
       '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Advanced…" class="plan-input" autocomplete="off"></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="eteam_' + n + '"></div></td>' +
-      '<td><input type="text" name="eemail_' + n + '" placeholder="email used for this account" autocomplete="new-password"></td>' +
+      '<td class="td-email"><input type="text" name="eemail_' + n + '" placeholder="email used for this account" autocomplete="new-password"><span class="edit-hint">✎</span></td>' +
       '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
     tbody.appendChild(tr);
     tr.querySelector('input').focus();
