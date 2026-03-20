@@ -656,8 +656,16 @@
       tr.querySelectorAll('input[type="text"], input.cb-team').forEach(function(el) {
         el.tabIndex = this.checked ? 0 : -1;
       }.bind(this));
+      updateSubmitBtn();
     });
   });
+
+  function updateSubmitBtn() {
+    var anyOn = !!document.querySelector('#toolsBody input[type="checkbox"]:checked, #extraBody input[name^="euse_"]:checked');
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = !anyOn;
+  }
+  updateSubmitBtn();
 
   // ── Step navigation ────────────────────────────────────────
   document.getElementById('nextBtn').addEventListener('click', function() {
@@ -749,7 +757,12 @@
     if (missingEmail) { showToast('Please fill in Access Email for: ' + missingEmail.service, 'error'); return; }
 
     btn.disabled = true;
-    btn.textContent = 'Sending…';
+    var dots = 0;
+    var dotsInterval = setInterval(function() {
+      dots = (dots + 1) % 4;
+      btn.textContent = 'Saving' + '.'.repeat(dots);
+    }, 400);
+    btn.textContent = 'Saving.';
 
     var payload = { workEmail: workEmail, rows: rows };
 
@@ -759,6 +772,7 @@
     })
     .then(function(r) { return r.json(); })
     .then(function(res) {
+      clearInterval(dotsInterval);
       if (res.status === 'ok') {
         document.getElementById('auditForm').style.display = 'none';
         document.getElementById('step3').style.display = 'block';
@@ -768,6 +782,7 @@
       }
     })
     .catch(function(err) {
+      clearInterval(dotsInterval);
       showToast('Error: ' + err.message, 'error');
       btn.disabled = false;
       btn.textContent = 'Submit →';
