@@ -312,19 +312,15 @@
     }
 
     .tools-table input[type="text"]::placeholder { color: var(--text-subtle); font-size: .75rem; }
-    @keyframes emailPhPulse {
-      0%, 45%, 100% { opacity: 0.35; }
-      55%           { opacity: 0.8; }
-    }
     .email-ph {
       position: absolute;
-      left: 0;
+      left: 16px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--accent);
       font-size: .75rem;
       pointer-events: none;
-      animation: emailPhPulse 2.5s ease-in-out infinite;
+      opacity: 0.55;
       white-space: nowrap;
     }
     .td-email input:not(:placeholder-shown) ~ .email-ph { display: none; }
