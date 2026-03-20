@@ -464,6 +464,20 @@
     }
   </style>
 </head>
+<datalist id="plans">
+  <option value="Free">
+  <option value="Pro">
+  <option value="Plus">
+  <option value="Advanced">
+  <option value="Business">
+  <option value="Enterprise">
+  <option value="Starter">
+  <option value="Basic">
+  <option value="Premium">
+  <option value="Team">
+  <option value="Unlimited">
+</datalist>
+
 <body>
 <div class="container">
 
@@ -603,7 +617,7 @@
         '<input type="checkbox" name="use_' + i + '">' +
         '<span class="toggle-slider"></span>' +
       '</label></div></td>' +
-      '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Advanced…" tabindex="-1" data-tip="plan"></td>' +
+      '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Advanced…" list="plans" tabindex="-1" data-tip="plan"></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="team_' + i + '" tabindex="-1"></div></td>' +
       '<td><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email"></td>' +
       '<td></td>';
@@ -643,7 +657,7 @@
     tr.innerHTML =
       '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="font-family:\'JetBrains Mono\',monospace;font-size:.78rem;width:100%"></td>' +
       '<td><div class="toggle-wrap"><label class="toggle"><input type="checkbox" name="euse_' + n + '" checked><span class="toggle-slider"></span></label></div></td>' +
-      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Advanced…"></td>' +
+      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Advanced…" list="plans"></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="eteam_' + n + '"></div></td>' +
       '<td><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
       '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
