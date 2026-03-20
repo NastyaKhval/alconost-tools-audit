@@ -391,6 +391,28 @@
 
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
+    /* Plan dropdown */
+    .plan-drop {
+      position: fixed;
+      background: var(--surface-2);
+      border: 1px solid var(--border-bright);
+      border-radius: var(--radius);
+      z-index: 600;
+      overflow: hidden;
+      display: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,.5);
+      min-width: 140px;
+    }
+    .plan-drop-item {
+      padding: 7px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: .8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background .1s, color .1s;
+    }
+    .plan-drop-item:hover { background: var(--surface); color: var(--accent); }
+
     /* Hearts animation */
     .heart-particle {
       position: fixed;
@@ -464,20 +486,6 @@
     }
   </style>
 </head>
-<datalist id="plans">
-  <option value="Free">
-  <option value="Pro">
-  <option value="Plus">
-  <option value="Advanced">
-  <option value="Business">
-  <option value="Enterprise">
-  <option value="Starter">
-  <option value="Basic">
-  <option value="Premium">
-  <option value="Team">
-  <option value="Unlimited">
-</datalist>
-
 <body>
 <div class="container">
 
@@ -617,7 +625,7 @@
         '<input type="checkbox" name="use_' + i + '">' +
         '<span class="toggle-slider"></span>' +
       '</label></div></td>' +
-      '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Advanced…" list="plans" tabindex="-1" data-tip="plan"></td>' +
+      '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Advanced…" class="plan-input" autocomplete="off" tabindex="-1" data-tip="plan"></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="team_' + i + '" tabindex="-1"></div></td>' +
       '<td><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email"></td>' +
       '<td></td>';
@@ -657,7 +665,7 @@
     tr.innerHTML =
       '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="font-family:\'JetBrains Mono\',monospace;font-size:.78rem;width:100%"></td>' +
       '<td><div class="toggle-wrap"><label class="toggle"><input type="checkbox" name="euse_' + n + '" checked><span class="toggle-slider"></span></label></div></td>' +
-      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Advanced…" list="plans"></td>' +
+      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Advanced…" class="plan-input" autocomplete="off"></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="eteam_' + n + '"></div></td>' +
       '<td><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
       '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
@@ -787,6 +795,51 @@
       setTimeout(function() { history.back(); }, 1400);
     }
   });
+
+  // ── Plan dropdown ───────────────────────────────────────────
+  var PLAN_OPTIONS = ['Free', 'Pro', 'Plus', 'Advanced', 'Business', 'Enterprise', 'Starter', 'Basic', 'Premium', 'Team', 'Unlimited'];
+  var planDrop = document.createElement('div');
+  planDrop.className = 'plan-drop';
+  document.body.appendChild(planDrop);
+  var planActive = null;
+
+  function showPlanDrop(input) {
+    planActive = input;
+    renderPlanDrop(input.value);
+    var r = input.getBoundingClientRect();
+    planDrop.style.left = r.left + 'px';
+    planDrop.style.top  = (r.bottom + 2) + 'px';
+    planDrop.style.width = Math.max(r.width, 140) + 'px';
+  }
+
+  function renderPlanDrop(q) {
+    var lq = q.toLowerCase();
+    var opts = PLAN_OPTIONS.filter(function(o) { return !lq || o.toLowerCase().indexOf(lq) === 0; });
+    if (!opts.length) { planDrop.style.display = 'none'; return; }
+    planDrop.innerHTML = opts.map(function(o) {
+      return '<div class="plan-drop-item" onmousedown="pickPlan(\'' + o + '\')">' + o + '</div>';
+    }).join('');
+    planDrop.style.display = 'block';
+  }
+
+  window.pickPlan = function(val) {
+    if (planActive) { planActive.value = val; }
+    planDrop.style.display = 'none';
+  };
+
+  document.addEventListener('focus', function(e) {
+    if (e.target.classList && e.target.classList.contains('plan-input')) showPlanDrop(e.target);
+  }, true);
+
+  document.addEventListener('input', function(e) {
+    if (e.target.classList && e.target.classList.contains('plan-input') && planActive === e.target) renderPlanDrop(e.target.value);
+  });
+
+  document.addEventListener('blur', function(e) {
+    if (e.target.classList && e.target.classList.contains('plan-input')) {
+      setTimeout(function() { planDrop.style.display = 'none'; planActive = null; }, 150);
+    }
+  }, true);
 
   function launchHearts(btn) {
     var rect = btn.getBoundingClientRect();
