@@ -312,20 +312,23 @@
     }
 
     .tools-table input[type="text"]::placeholder { color: var(--text-subtle); font-size: .75rem; }
-    @keyframes emailPlaceholderPulse {
+    @keyframes emailPhPulse {
       0%, 45%, 100% { opacity: 0.35; }
-      55%           { opacity: 0.75; }
+      55%           { opacity: 0.8; }
     }
-    .td-email input[type="text"]::placeholder {
+    .email-ph {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
       color: var(--accent);
       font-size: .75rem;
-      animation: emailPlaceholderPulse 2.5s ease-in-out infinite;
+      pointer-events: none;
+      animation: emailPhPulse 2.5s ease-in-out infinite;
+      white-space: nowrap;
     }
-    .tools-table tbody tr.inactive .td-email input[type="text"]::placeholder {
-      color: var(--text-subtle);
-      animation: none;
-      opacity: 0.3;
-    }
+    .td-email input:not(:placeholder-shown) ~ .email-ph { display: none; }
+    .tools-table tbody tr.inactive .email-ph { display: none; }
 
     .plan-wrap { position: relative; display: flex; align-items: center; width: 100%; }
     .plan-wrap input { flex: 1; padding-right: 34px; }
@@ -707,7 +710,7 @@
       '</label></div></td>' +
       '<td><div class="plan-wrap"><input type="text" name="plan_' + i + '" class="plan-input" autocomplete="off" tabindex="-1" data-tip="plan" placeholder="please input or select"><button type="button" class="plan-clear" tabindex="-1" onclick="this.previousElementSibling.value=\'\';this.previousElementSibling.dispatchEvent(new Event(\'input\'))">✕</button><button type="button" class="plan-arrow" tabindex="-1">▾</button></div></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="team_' + i + '" tabindex="-1"></div></td>' +
-      '<td class="td-email"><input type="text" name="email_' + i + '" placeholder="please enter email here" tabindex="-1" data-tip="email" autocomplete="new-password"><span class="edit-hint">✎</span></td>' +
+      '<td class="td-email"><input type="text" name="email_' + i + '" placeholder=" " tabindex="-1" data-tip="email" autocomplete="new-password"><span class="email-ph">please enter email here</span><span class="edit-hint">✎</span></td>' +
       '<td></td>';
     tbody.appendChild(tr);
 
@@ -755,7 +758,7 @@
       '<td><div class="toggle-wrap"><label class="toggle"><input type="checkbox" name="euse_' + n + '" checked><span class="toggle-slider"></span></label></div></td>' +
       '<td><div class="plan-wrap"><input type="text" name="eplan_' + n + '" class="plan-input" autocomplete="off" placeholder="please input or select"><button type="button" class="plan-clear" tabindex="-1" onclick="this.previousElementSibling.value=\'\';this.previousElementSibling.dispatchEvent(new Event(\'input\'))">✕</button><button type="button" class="plan-arrow" tabindex="-1">▾</button></div></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="eteam_' + n + '"></div></td>' +
-      '<td class="td-email"><input type="text" name="eemail_' + n + '" placeholder="please enter email here" autocomplete="new-password"><span class="edit-hint">✎</span></td>' +
+      '<td class="td-email"><input type="text" name="eemail_' + n + '" placeholder=" " autocomplete="new-password"><span class="email-ph">please enter email here</span><span class="edit-hint">✎</span></td>' +
       '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
     tbody.appendChild(tr);
     tr.querySelector('input').focus();
