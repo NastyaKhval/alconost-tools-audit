@@ -807,9 +807,17 @@
     planActive = input;
     renderPlanDrop(input.value);
     var r = input.getBoundingClientRect();
+    var dropH = planDrop.offsetHeight || 260;
+    var spaceBelow = window.innerHeight - r.bottom;
     planDrop.style.left = r.left + 'px';
-    planDrop.style.top  = (r.bottom + 2) + 'px';
     planDrop.style.width = Math.max(r.width, 140) + 'px';
+    if (spaceBelow < dropH + 8) {
+      planDrop.style.top = '';
+      planDrop.style.bottom = (window.innerHeight - r.top + 2) + 'px';
+    } else {
+      planDrop.style.bottom = '';
+      planDrop.style.top = (r.bottom + 2) + 'px';
+    }
   }
 
   function renderPlanDrop(q) {
