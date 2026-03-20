@@ -164,8 +164,19 @@
     }
 
     .tools-table th:nth-child(2) { text-align: center; white-space: nowrap; }
+    .tools-table th:nth-child(4) { text-align: center; white-space: nowrap; }
     .tools-table th:nth-child(3),
-    .tools-table th:nth-child(4) { text-align: left; }
+    .tools-table th:nth-child(5) { text-align: left; }
+
+    /* Team checkbox */
+    .cb-wrap { display: flex; justify-content: center; align-items: center; }
+    .cb-team {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .tools-table tbody tr.inactive .cb-team { pointer-events: none; }
 
     .tools-table tbody tr {
       border-bottom: 1px solid var(--border);
@@ -438,8 +449,8 @@
 
     @media (max-width: 600px) {
       .personal-grid { grid-template-columns: 1fr; }
-      .tools-table th:nth-child(4),
-      .tools-table td:nth-child(4) { display: none; }
+      .tools-table th:nth-child(5),
+      .tools-table td:nth-child(5) { display: none; }
     }
   </style>
 </head>
@@ -476,13 +487,14 @@
     <div class="card">
       <table class="tools-table">
         <colgroup>
-          <col><col style="width:80px"><col style="width:180px"><col style="width:220px"><col style="width:36px">
+          <col><col style="width:80px"><col style="width:180px"><col style="width:80px"><col style="width:220px"><col style="width:36px">
         </colgroup>
         <thead>
           <tr>
             <th>Service</th>
             <th style="text-align:center">I use this</th>
             <th>Subscription Plan</th>
+            <th style="text-align:center;cursor:default" data-tip="team">Team Acc</th>
             <th>Access Email</th>
             <th></th>
           </tr>
@@ -499,11 +511,11 @@
       </div>
       <table class="tools-table">
         <colgroup>
-          <col><col style="width:80px"><col style="width:180px"><col style="width:220px"><col style="width:36px">
+          <col><col style="width:80px"><col style="width:180px"><col style="width:80px"><col style="width:220px"><col style="width:36px">
         </colgroup>
         <tbody id="extraBody">
           <tr id="extraPlaceholder">
-            <td colspan="5" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:'JetBrains Mono',monospace;font-size:.7rem">
+            <td colspan="6" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:'JetBrains Mono',monospace;font-size:.7rem">
               No additional tools added yet
             </td>
           </tr>
@@ -581,14 +593,15 @@
         '<input type="checkbox" name="use_' + i + '">' +
         '<span class="toggle-slider"></span>' +
       '</label></div></td>' +
-      '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Team…" tabindex="-1" data-tip="plan"></td>' +
+      '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Advanced…" tabindex="-1" data-tip="plan"></td>' +
+      '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="team_' + i + '" tabindex="-1"></div></td>' +
       '<td><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email"></td>' +
       '<td></td>';
     tbody.appendChild(tr);
 
-    tr.querySelector('input[type="checkbox"]').addEventListener('change', function() {
+    tr.querySelector('input[name="use_' + i + '"]').addEventListener('change', function() {
       tr.classList.toggle('inactive', !this.checked);
-      tr.querySelectorAll('input[type="text"]').forEach(function(el) {
+      tr.querySelectorAll('input[type="text"], input.cb-team').forEach(function(el) {
         el.tabIndex = this.checked ? 0 : -1;
       }.bind(this));
     });
@@ -620,7 +633,8 @@
     tr.innerHTML =
       '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="font-family:\'JetBrains Mono\',monospace;font-size:.78rem;width:100%"></td>' +
       '<td><div class="toggle-wrap"><label class="toggle"><input type="checkbox" name="euse_' + n + '" checked><span class="toggle-slider"></span></label></div></td>' +
-      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Team…"></td>' +
+      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Advanced…"></td>' +
+      '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="eteam_' + n + '" checked></div></td>' +
       '<td><input type="text" name="eemail_' + n + '" placeholder="email used for this account"></td>' +
       '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
     tbody.appendChild(tr);
@@ -633,7 +647,7 @@
     if (!document.getElementById('extraBody').querySelector('tr')) {
       var ph = document.createElement('tr');
       ph.id = 'extraPlaceholder';
-      ph.innerHTML = '<td colspan="4" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:\'JetBrains Mono\',monospace;font-size:.7rem">No additional tools added yet</td>';
+      ph.innerHTML = '<td colspan="6" style="text-align:center;padding:20px;color:var(--text-subtle);font-family:\'JetBrains Mono\',monospace;font-size:.7rem">No additional tools added yet</td>';
       document.getElementById('extraBody').appendChild(ph);
     }
   }
@@ -657,6 +671,7 @@
         service: s.name,
         uses:    'Yes',
         plan:    (form['plan_'  + i].value || '').trim(),
+        team:    form['team_' + i] && form['team_' + i].checked ? 'Yes' : '',
         email:   (form['email_' + i].value || '').trim(),
       };
     }).filter(Boolean);
@@ -671,6 +686,7 @@
         service: ename,
         uses:    'Yes',
         plan:    (form['eplan_'  + n] ? form['eplan_'  + n].value : '').trim(),
+        team:    form['eteam_' + n] && form['eteam_' + n].checked ? 'Yes' : '',
         email:   (form['eemail_' + n] ? form['eemail_' + n].value : '').trim(),
       });
     }
@@ -705,14 +721,15 @@
 
   // ── Tooltips ───────────────────────────────────────────────
   var TIPS = {
-    plan:  'Your subscription type for this tool — e.g. Free, Pro, or Team. If you\'re part of a shared team plan, mention it here.',
+    plan:  'Your subscription tier — e.g. Free, Pro, Advanced, Business, Plus. Different tools use different names.',
     email: 'The email address this specific account is registered under. May differ from your work email.',
+    team:  'Check this if your account is part of a shared team subscription — i.e. multiple people access it under one plan.',
   };
   var tip = document.getElementById('tip');
   var tipTimer;
 
   document.addEventListener('mouseover', function(e) {
-    var el = e.target.closest('input[data-tip]');
+    var el = e.target.closest('[data-tip]');
     if (!el) return;
     clearTimeout(tipTimer);
     tipTimer = setTimeout(function() {
@@ -727,7 +744,7 @@
   });
 
   document.addEventListener('mouseout', function(e) {
-    if (e.target.closest('input[data-tip]')) {
+    if (e.target.closest('[data-tip]')) {
       clearTimeout(tipTimer);
       tip.style.display = 'none';
     }
