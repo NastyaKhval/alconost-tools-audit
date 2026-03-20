@@ -810,7 +810,7 @@
 
   function showPlanDrop(input) {
     planActive = input;
-    renderPlanDrop(input.value);
+    renderPlanDrop('');
     var r = input.getBoundingClientRect();
     var dropH = planDrop.offsetHeight || 260;
     var spaceBelow = window.innerHeight - r.bottom;
