@@ -312,6 +312,20 @@
     }
 
     .tools-table input[type="text"]::placeholder { color: var(--text-subtle); font-size: .75rem; }
+    @keyframes emailPlaceholderPulse {
+      0%, 100% { opacity: 0.5; }
+      50%       { opacity: 1; }
+    }
+    .td-email input[type="text"]::placeholder {
+      color: var(--accent);
+      font-size: .75rem;
+      animation: emailPlaceholderPulse 2s ease-in-out infinite;
+    }
+    .tools-table tbody tr.inactive .td-email input[type="text"]::placeholder {
+      color: var(--text-subtle);
+      animation: none;
+      opacity: 0.3;
+    }
 
     .plan-wrap { position: relative; display: flex; align-items: center; width: 100%; }
     .plan-wrap input { flex: 1; padding-right: 34px; }
