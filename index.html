@@ -440,16 +440,29 @@
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
     /* Plan dropdown */
+    @keyframes dropOpen { from { opacity:0; transform:scaleY(.8); } to { opacity:1; transform:scaleY(1); } }
+    @keyframes dropOpenUp { from { opacity:0; transform:scaleY(.8); } to { opacity:1; transform:scaleY(1); } }
     .plan-drop {
       position: fixed;
       background: var(--surface-2);
       border: 1px solid var(--border-bright);
-      border-radius: var(--radius);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
       z-index: 600;
       overflow: hidden;
       display: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,.5);
+      box-shadow: 0 6px 20px rgba(0,0,0,.45);
       min-width: 140px;
+      transform-origin: top center;
+      animation: dropOpen .14s ease;
+    }
+    .plan-drop.drop-up {
+      border-top: 1px solid var(--border-bright);
+      border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+      transform-origin: bottom center;
+      animation: dropOpenUp .14s ease;
+      box-shadow: 0 -6px 20px rgba(0,0,0,.45);
     }
     .plan-drop-item {
       padding: 7px 12px;
@@ -878,11 +891,13 @@
     planDrop.style.left = r.left + 'px';
     planDrop.style.width = Math.max(r.width, 140) + 'px';
     if (spaceBelow < dropH + 8) {
+      planDrop.classList.add('drop-up');
       planDrop.style.top = '';
-      planDrop.style.bottom = (window.innerHeight - r.top + 2) + 'px';
+      planDrop.style.bottom = (window.innerHeight - r.top) + 'px';
     } else {
+      planDrop.classList.remove('drop-up');
       planDrop.style.bottom = '';
-      planDrop.style.top = (r.bottom + 2) + 'px';
+      planDrop.style.top = r.bottom + 'px';
     }
   }
 
@@ -893,7 +908,10 @@
     planDrop.innerHTML = opts.map(function(o) {
       return '<div class="plan-drop-item" onmousedown="pickPlan(\'' + o + '\')">' + o + '</div>';
     }).join('');
+    planDrop.style.animation = 'none';
     planDrop.style.display = 'block';
+    planDrop.offsetHeight; // reflow
+    planDrop.style.animation = '';
   }
 
   window.pickPlan = function(val) {
