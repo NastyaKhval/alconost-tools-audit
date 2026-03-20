@@ -313,6 +313,26 @@
 
     .tools-table input[type="text"]::placeholder { color: var(--text-subtle); font-size: .75rem; }
 
+    .plan-wrap { position: relative; display: flex; align-items: center; width: 100%; }
+    .plan-wrap input { flex: 1; padding-right: 18px; }
+    .plan-arrow {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-subtle);
+      font-size: .55rem;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      opacity: 0.5;
+      transition: opacity .15s, color .15s;
+    }
+    .plan-arrow:hover { opacity: 1; color: var(--accent); }
+    .tools-table tbody tr.inactive .plan-arrow { pointer-events: none; }
+
     .td-email { position: relative; }
     .edit-hint {
       position: absolute;
@@ -645,7 +665,7 @@
         '<input type="checkbox" name="use_' + i + '">' +
         '<span class="toggle-slider"></span>' +
       '</label></div></td>' +
-      '<td><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Advanced…" class="plan-input" autocomplete="off" tabindex="-1" data-tip="plan"></td>' +
+      '<td><div class="plan-wrap"><input type="text" name="plan_' + i + '" placeholder="Free / Pro / Advanced…" class="plan-input" autocomplete="off" tabindex="-1" data-tip="plan"><button type="button" class="plan-arrow" tabindex="-1">▾</button></div></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="team_' + i + '" tabindex="-1"></div></td>' +
       '<td class="td-email"><input type="text" name="email_' + i + '" placeholder="email used for this account" tabindex="-1" data-tip="email" autocomplete="new-password"><span class="edit-hint">✎</span></td>' +
       '<td></td>';
@@ -693,7 +713,7 @@
     tr.innerHTML =
       '<td><input type="text" name="ename_' + n + '" placeholder="Tool name" style="font-family:\'JetBrains Mono\',monospace;font-size:.78rem;width:100%"></td>' +
       '<td><div class="toggle-wrap"><label class="toggle"><input type="checkbox" name="euse_' + n + '" checked><span class="toggle-slider"></span></label></div></td>' +
-      '<td><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Advanced…" class="plan-input" autocomplete="off"></td>' +
+      '<td><div class="plan-wrap"><input type="text" name="eplan_' + n + '" placeholder="Free / Pro / Advanced…" class="plan-input" autocomplete="off"><button type="button" class="plan-arrow" tabindex="-1">▾</button></div></td>' +
       '<td><div class="cb-wrap"><input type="checkbox" class="cb-team" name="eteam_' + n + '"></div></td>' +
       '<td class="td-email"><input type="text" name="eemail_' + n + '" placeholder="email used for this account" autocomplete="new-password"><span class="edit-hint">✎</span></td>' +
       '<td><button type="button" class="btn-remove" onclick="removeExtra(' + n + ')">×</button></td>';
@@ -873,19 +893,26 @@
     planDrop.style.display = 'none';
   };
 
-  document.addEventListener('focus', function(e) {
-    if (e.target.classList && e.target.classList.contains('plan-input')) showPlanDrop(e.target);
-  }, true);
+  document.addEventListener('click', function(e) {
+    var arrow = e.target.closest('.plan-arrow');
+    if (arrow) {
+      var input = arrow.parentElement.querySelector('.plan-input');
+      if (planDrop.style.display === 'block' && planActive === input) {
+        planDrop.style.display = 'none'; planActive = null;
+      } else {
+        input.focus();
+        showPlanDrop(input);
+      }
+      return;
+    }
+    if (!e.target.closest('.plan-drop') && !e.target.closest('.plan-wrap')) {
+      planDrop.style.display = 'none'; planActive = null;
+    }
+  });
 
   document.addEventListener('input', function(e) {
     if (e.target.classList && e.target.classList.contains('plan-input') && planActive === e.target) renderPlanDrop(e.target.value);
   });
-
-  document.addEventListener('blur', function(e) {
-    if (e.target.classList && e.target.classList.contains('plan-input')) {
-      setTimeout(function() { planDrop.style.display = 'none'; planActive = null; }, 150);
-    }
-  }, true);
 
   window.addEventListener('scroll', function() { planDrop.style.display = 'none'; planActive = null; }, true);
 
