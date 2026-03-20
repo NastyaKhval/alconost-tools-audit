@@ -856,6 +856,10 @@
 
   window.addEventListener('scroll', function() { planDrop.style.display = 'none'; planActive = null; }, true);
 
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { planDrop.style.display = 'none'; planActive = null; }
+  });
+
   function launchHearts(btn) {
     var rect = btn.getBoundingClientRect();
     var cx = rect.left + rect.width / 2;
